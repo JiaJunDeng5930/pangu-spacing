@@ -155,7 +155,7 @@ When you set t here, the space will be insert when you save file."
 (defcustom pangu-spacing-inhibit-mode-alist '(eshell-mode shell-mode term-mode)
   "Inhibit mode alist for pangu-spacing-mode."
   :group 'pangu-spacing
-  :type 'list)
+  :type '(repeat symbol))
 
 ;;;; Local variables
 
@@ -175,8 +175,8 @@ When you set t here, the space will be insert when you save file."
                    (group-n 1 (or (category chinese-two-byte)
                                   (category japanese-hiragana-two-byte)
                                   (category japanese-katakana-two-byte))))
-               (group-n 2 (in "a-zA-Z0-9")))
-          (and (group-n 1 (in "a-zA-Z0-9"))
+               (group-n 2 (in "a-zA-Z0-9#&*+-=/?.,")))
+          (and (group-n 1 (in "a-zA-Z0-9#&*+-=/?.,"))
                (or (group-n 3 (any "。，！？；：「」（）、"))
                    (group-n 2 (or (category chinese-two-byte)
                                   (category japanese-hiragana-two-byte)
@@ -184,20 +184,20 @@ When you set t here, the space will be insert when you save file."
   "Regexp to find Chinese character before English character.
 
 Group 1 contains the character before the potential pangu spacing,
-and group 2 the character after that. A space is needed when both
-group 1 and group 2 are non-nil. Group 3 is used as a workaround
-for excluded characters. Since `rx` does not support matching text
+and group 2 the character after that.  A space is needed when both
+group 1 and group 2 are non-nil.  Group 3 is used as a workaround
+for excluded characters.  Since `rx` does not support matching text
 that satisfies two regexps at the same time (we want to match all
 Chinese two-byte characters, but not punctuations), we first try
 to match excluded characters, then the characters that need
-pangu-spacing. The excluded characters will be matched to group 3,
-and shortcut the matching for Chinese characters. Thus group 1 and
+pangu-spacing.  The excluded characters will be matched to group 3,
+and shortcut the matching for Chinese characters.  Thus group 1 and
 group 2 will both be non-nil when a pangu space is needed.")
 
 ;;;; Functions
 
 (defmacro pangu-spacing-search-buffer (regexp start end func)
-  "Helper macro to search buffer and do func according regexp for
+  "Helper macro to search buffer and do func according REGEXP for
 pangu-spacing-mode."
   `(let ((start ,start) (end ,end))
      (save-excursion
